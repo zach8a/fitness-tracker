@@ -132,8 +132,71 @@
       <div class="card-title">Log Exercise</div>
       <div class="form-grid">
         <div class="form-group" style="grid-column: span 2">
-          <label>Exercise Name</label>
-          <input id="w-name" type="text" placeholder="e.g. Bench Press">
+          <label>Exercise</label>
+          <select id="w-name" onchange="toggleCustomExercise()">
+            <option value="">— Select Exercise —</option>
+            <optgroup label="Chest">
+              <option>Bench Press</option>
+              <option>Incline Bench Press</option>
+              <option>Decline Bench Press</option>
+              <option>Dumbbell Fly</option>
+              <option>Cable Fly</option>
+              <option>Push-Up</option>
+            </optgroup>
+            <optgroup label="Back">
+              <option>Deadlift</option>
+              <option>Pull-Up</option>
+              <option>Lat Pulldown</option>
+              <option>Bent Over Row</option>
+              <option>Seated Cable Row</option>
+              <option>T-Bar Row</option>
+            </optgroup>
+            <optgroup label="Shoulders">
+              <option>Overhead Press</option>
+              <option>Dumbbell Shoulder Press</option>
+              <option>Lateral Raise</option>
+              <option>Front Raise</option>
+              <option>Face Pull</option>
+              <option>Arnold Press</option>
+            </optgroup>
+            <optgroup label="Arms">
+              <option>Barbell Curl</option>
+              <option>Dumbbell Curl</option>
+              <option>Hammer Curl</option>
+              <option>Tricep Pushdown</option>
+              <option>Skull Crusher</option>
+              <option>Dips</option>
+            </optgroup>
+            <optgroup label="Legs">
+              <option>Squat</option>
+              <option>Leg Press</option>
+              <option>Romanian Deadlift</option>
+              <option>Leg Curl</option>
+              <option>Leg Extension</option>
+              <option>Calf Raise</option>
+              <option>Lunges</option>
+              <option>Hip Thrust</option>
+            </optgroup>
+            <optgroup label="Core">
+              <option>Plank</option>
+              <option>Crunch</option>
+              <option>Hanging Leg Raise</option>
+              <option>Cable Crunch</option>
+              <option>Russian Twist</option>
+            </optgroup>
+            <optgroup label="Cardio">
+              <option>Treadmill</option>
+              <option>Elliptical</option>
+              <option>Bike</option>
+              <option>Stair Climber</option>
+              <option>Jump Rope</option>
+            </optgroup>
+            <option value="__custom__">Other (type my own)</option>
+          </select>
+        </div>
+        <div class="form-group" id="custom-exercise-group" style="grid-column: span 2; display:none">
+          <label>Custom Exercise Name</label>
+          <input id="w-name-custom" type="text" placeholder="Enter exercise name">
         </div>
         <div class="form-group">
           <label>Sets</label>
@@ -332,8 +395,16 @@ function switchTab(name) {
 }
 
 // ── WORKOUT ───────────────────────────────────────────────────────────────
+function toggleCustomExercise() {
+  const sel = document.getElementById('w-name').value;
+  document.getElementById('custom-exercise-group').style.display = sel === '__custom__' ? 'block' : 'none';
+}
+
 function addWorkout() {
-  const name = document.getElementById('w-name').value.trim();
+  const sel = document.getElementById('w-name').value;
+  const name = sel === '__custom__'
+    ? document.getElementById('w-name-custom').value.trim()
+    : sel.trim();
   const sets = parseInt(document.getElementById('w-sets').value);
   const reps = parseInt(document.getElementById('w-reps').value);
   const weight = parseFloat(document.getElementById('w-weight').value) || 0;
@@ -343,6 +414,8 @@ function addWorkout() {
   entries.push({ name, sets, reps, weight, date, id: Date.now() });
   save('ft-workouts', entries);
   document.getElementById('w-name').value = '';
+  document.getElementById('w-name-custom').value = '';
+  document.getElementById('custom-exercise-group').style.display = 'none';
   document.getElementById('w-sets').value = '';
   document.getElementById('w-reps').value = '';
   document.getElementById('w-weight').value = '';
