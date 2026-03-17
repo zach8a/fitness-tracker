@@ -7,32 +7,81 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
-      --bg: #0f1117;
-      --card: #1e2535;
-      --card2: #1a1f2e;
-      --border: #2d3748;
-      --border-hover: #3d4f6e;
-      --text: #e2e8f0;
-      --muted: #64748b;
+      --bg: #0d0d1a;
+      --card: rgba(255,255,255,0.07);
+      --card-solid: #16163a;
+      --border: rgba(255,255,255,0.12);
+      --text: #f0f0ff;
+      --muted: rgba(255,255,255,0.45);
+      --purple: #c084fc;
+      --pink: #f472b6;
       --blue: #60a5fa;
       --green: #34d399;
-      --red: #f87171;
-      --purple: #a78bfa;
       --yellow: #fbbf24;
+      --red: #f87171;
+      --grad1: linear-gradient(135deg, #7c3aed, #db2777);
+      --grad2: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      --grad3: linear-gradient(135deg, #10b981, #3b82f6);
+      --grad4: linear-gradient(135deg, #f59e0b, #ef4444);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; }
+    body {
+      background: var(--bg);
+      background-image: radial-gradient(ellipse at top left, rgba(124,58,237,0.25) 0%, transparent 50%),
+                        radial-gradient(ellipse at bottom right, rgba(219,39,119,0.2) 0%, transparent 50%);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+    }
 
     /* Header */
-    header { background: linear-gradient(135deg, #1a1f2e 0%, #16213e 100%); padding: 20px 20px 16px; border-bottom: 1px solid var(--border); }
-    header h1 { font-size: 1.4rem; font-weight: 700; color: #fff; }
-    header p { font-size: 0.78rem; color: var(--muted); margin-top: 3px; }
+    header {
+      background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
+      padding: 22px 20px 18px;
+      position: relative;
+      overflow: hidden;
+    }
+    header::after {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 180px; height: 180px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50%;
+    }
+    header h1 { font-size: 1.5rem; font-weight: 800; color: #fff; letter-spacing: -0.02em; }
+    header p { font-size: 0.78rem; color: rgba(255,255,255,0.75); margin-top: 3px; }
 
     /* Tabs */
-    .tabs { display: flex; gap: 8px; padding: 14px 16px; background: var(--card2); border-bottom: 1px solid var(--border); overflow-x: auto; }
-    .tab { padding: 7px 16px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--muted); font-size: 0.82rem; cursor: pointer; white-space: nowrap; transition: all .15s; }
-    .tab:hover { border-color: var(--border-hover); color: var(--text); }
-    .tab.active { background: #1e3a5f; border-color: var(--blue); color: var(--blue); font-weight: 600; }
+    .tabs {
+      display: flex;
+      gap: 8px;
+      padding: 14px 16px;
+      background: rgba(255,255,255,0.04);
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+      backdrop-filter: blur(10px);
+    }
+    .tab {
+      padding: 8px 18px;
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.83rem;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all .2s;
+    }
+    .tab:hover { color: var(--text); border-color: rgba(255,255,255,0.3); }
+    .tab.active {
+      background: var(--grad1);
+      border-color: transparent;
+      color: #fff;
+      font-weight: 700;
+      box-shadow: 0 4px 15px rgba(124,58,237,0.4);
+    }
 
     /* Container */
     .container { max-width: 900px; margin: 0 auto; padding: 20px 16px; }
@@ -42,71 +91,172 @@
     .section.active { display: block; }
 
     /* Cards */
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; margin-bottom: 14px; }
-    .card-title { font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: 14px; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px 22px;
+      margin-bottom: 14px;
+      backdrop-filter: blur(12px);
+    }
+    .card-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 16px;
+      background: var(--grad1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
 
     /* Form */
-    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 12px; }
-    .form-group { display: flex; flex-direction: column; gap: 5px; }
-    label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
-    input, select { background: var(--card2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); padding: 8px 10px; font-size: 0.85rem; outline: none; transition: border-color .15s; width: 100%; }
-    input:focus, select:focus { border-color: var(--blue); }
-    input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.6); }
-    .btn { padding: 9px 20px; border-radius: 8px; border: none; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: opacity .15s; }
-    .btn-blue { background: var(--blue); color: #0f1117; }
-    .btn-red { background: transparent; border: 1px solid var(--red); color: var(--red); padding: 4px 10px; font-size: 0.75rem; border-radius: 6px; }
-    .btn:hover { opacity: 0.85; }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 14px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; font-weight: 600; }
+    input, select {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      padding: 9px 12px;
+      font-size: 0.85rem;
+      outline: none;
+      transition: all .2s;
+      width: 100%;
+    }
+    input:focus, select:focus {
+      border-color: var(--purple);
+      background: rgba(192,132,252,0.1);
+      box-shadow: 0 0 0 3px rgba(192,132,252,0.15);
+    }
+    select option { background: #1a1a3e; color: var(--text); }
+    input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.7); }
+    .btn {
+      padding: 10px 22px;
+      border-radius: 10px;
+      border: none;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .btn-blue {
+      background: var(--grad1);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(124,58,237,0.35);
+    }
+    .btn-blue:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(124,58,237,0.5); }
+    .btn-red {
+      background: rgba(248,113,113,0.12);
+      border: 1px solid rgba(248,113,113,0.3);
+      color: var(--red);
+      padding: 5px 11px;
+      font-size: 0.75rem;
+      border-radius: 8px;
+    }
 
     /* Table */
     table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
-    th { color: var(--muted); font-weight: 600; text-align: left; padding: 6px 8px; font-size: 0.72rem; text-transform: uppercase; letter-spacing: .04em; border-bottom: 1px solid var(--border); }
-    td { padding: 9px 8px; border-bottom: 1px solid #1a1f2e; }
+    th {
+      color: var(--muted);
+      font-weight: 700;
+      text-align: left;
+      padding: 7px 10px;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      border-bottom: 1px solid var(--border);
+    }
+    td { padding: 10px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); }
     tr:last-child td { border-bottom: none; }
-    tr:hover td { background: #1a2030; }
+    tr:hover td { background: rgba(255,255,255,0.04); }
 
     /* Stats row */
-    .stats-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
-    .stat-box { background: var(--card2); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; flex: 1; min-width: 90px; }
-    .stat-lbl { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px; }
-    .stat-val { font-size: 1.2rem; font-weight: 700; }
+    .stats-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
+    .stat-box {
+      border-radius: 14px;
+      padding: 14px 16px;
+      flex: 1;
+      min-width: 90px;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-box::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 14px;
+      padding: 1px;
+      background: var(--grad1);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+    }
+    .stat-box-inner { background: rgba(255,255,255,0.05); border-radius: 13px; padding: 14px 16px; margin: -14px -16px; }
+    .stat-lbl { font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 5px; font-weight: 600; }
+    .stat-val { font-size: 1.3rem; font-weight: 800; }
 
     /* Progress bar */
-    .prog-bar { background: var(--card2); border-radius: 4px; height: 8px; margin-top: 5px; overflow: hidden; }
-    .prog-fill { height: 100%; border-radius: 4px; transition: width .3s; }
-    .macro-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; font-size: 0.82rem; }
-    .macro-row .macro-lbl { color: var(--muted); font-size: 0.72rem; }
+    .prog-bar { background: rgba(255,255,255,0.08); border-radius: 6px; height: 8px; margin-top: 6px; overflow: hidden; }
+    .prog-fill { height: 100%; border-radius: 6px; transition: width .4s ease; }
+    .macro-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; font-size: 0.83rem; }
+    .macro-row .macro-lbl { color: var(--muted); font-size: 0.73rem; font-weight: 600; }
 
     /* Meals list */
-    .meal-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .meal-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
     .meal-item:last-child { border-bottom: none; }
-    .meal-name { font-size: 0.88rem; font-weight: 500; }
-    .meal-macros { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
-    .meal-cal { font-size: 0.88rem; color: var(--yellow); font-weight: 600; }
+    .meal-name { font-size: 0.9rem; font-weight: 600; }
+    .meal-macros { font-size: 0.72rem; color: var(--muted); margin-top: 3px; }
+    .meal-cal { font-size: 0.95rem; font-weight: 800; background: var(--grad4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 
     /* PR board */
-    .pr-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .pr-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
     .pr-item:last-child { border-bottom: none; }
-    .pr-name { font-size: 0.88rem; }
-    .pr-weight { font-size: 1rem; font-weight: 700; color: var(--blue); }
+    .pr-name { font-size: 0.9rem; font-weight: 500; }
+    .pr-weight { font-size: 1.05rem; font-weight: 800; background: var(--grad2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 
     /* Chart container */
-    .chart-wrap { position: relative; height: 220px; margin-top: 4px; }
+    .chart-wrap { position: relative; height: 220px; margin-top: 6px; }
 
     /* Goals form */
     .goals-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
     .goals-row .form-group { flex: 1; min-width: 80px; }
 
-    /* Empty state */
-    .empty { text-align: center; color: var(--muted); padding: 30px 0; font-size: 0.85rem; }
+    /* Set rows */
+    .set-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .set-label { font-size: 0.78rem; font-weight: 700; color: var(--purple); min-width: 44px; }
+    .set-row input { flex: 1; }
 
-    /* Badge */
-    .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: 600; }
-    .badge-blue { background: #1e3a5f; color: var(--blue); }
-    .badge-green { background: #064e3b; color: var(--green); }
+    /* Calendar */
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+    .cal-dow { text-align: center; font-size: 0.55rem; font-weight: 700; color: var(--muted); text-transform: uppercase; padding: 2px 0; }
+    .cal-day {
+      aspect-ratio: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      font-size: 0.55rem;
+      font-weight: 700;
+    }
+    .cal-day.empty { background: transparent; }
+    .cal-day.future { background: rgba(255,255,255,0.03); color: var(--muted); }
+    .cal-day.did-workout { background: rgba(52,211,153,0.18); border: 1px solid rgba(52,211,153,0.35); color: var(--green); }
+    .cal-day.rest-day { background: rgba(96,165,250,0.12); border: 1px solid rgba(96,165,250,0.3); color: var(--blue); }
+    .cal-day.no-workout { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.25); color: var(--red); }
+    .cal-day.is-today { border: 1px solid var(--purple) !important; box-shadow: 0 0 6px rgba(192,132,252,0.4); }
+    .cal-day .cal-num { font-size: 0.55rem; line-height: 1; }
+    .cal-day .cal-icon { font-size: 0.6rem; line-height: 1; }
+
+    /* Empty state */
+    .empty { text-align: center; color: var(--muted); padding: 32px 0; font-size: 0.85rem; }
 
     @media (max-width: 500px) {
       .form-grid { grid-template-columns: 1fr 1fr; }
-      header h1 { font-size: 1.2rem; }
+      header h1 { font-size: 1.25rem; }
     }
   </style>
 </head>
@@ -128,6 +278,37 @@
 
   <!-- ── WORKOUT ── -->
   <div id="tab-workout" class="section active">
+
+    <!-- Top row: calendar + streak -->
+    <div style="display:flex;gap:12px;margin-bottom:14px;">
+
+      <!-- Compact calendar -->
+      <div class="card" style="flex:1;padding:12px 14px;margin-bottom:0;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <span style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;background:var(--grad1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Calendar</span>
+          <div style="display:flex;gap:4px;align-items:center;">
+            <button onclick="calNav(-1)" style="background:rgba(255,255,255,0.08);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:1px 7px;cursor:pointer;font-size:0.85rem;line-height:1.6;">‹</button>
+            <span id="cal-month-label" style="font-size:0.65rem;font-weight:700;min-width:72px;text-align:center;"></span>
+            <button onclick="calNav(1)" style="background:rgba(255,255,255,0.08);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:1px 7px;cursor:pointer;font-size:0.85rem;line-height:1.6;">›</button>
+          </div>
+        </div>
+        <div id="calendar-grid"></div>
+      </div>
+
+      <!-- Streak panel -->
+      <div class="card" style="flex:1;padding:12px 14px;margin-bottom:0;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;">
+        <div style="font-size:2rem;line-height:1;" id="streak-fire">🔥</div>
+        <div id="streak-count" style="font-size:1.4rem;font-weight:800;background:var(--grad1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">0</div>
+        <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700;">Day Streak</div>
+        <button id="rest-day-btn" onclick="logRestDay()" style="margin-top:6px;background:rgba(96,165,250,0.12);border:1px solid rgba(96,165,250,0.3);color:var(--blue);border-radius:8px;padding:5px 12px;cursor:pointer;font-size:0.72rem;font-weight:700;width:100%;">😴 Log Rest Day</button>
+        <div style="display:flex;gap:8px;font-size:0.6rem;color:var(--muted);">
+          <span><span style="color:var(--green)">✓</span> workout</span>
+          <span><span style="color:var(--blue)">𝗥</span> rest</span>
+          <span><span style="color:var(--red)">✕</span> missed</span>
+        </div>
+      </div>
+    </div>
+
     <div class="card">
       <div class="card-title">Log Exercise</div>
       <div class="form-grid">
@@ -198,23 +379,35 @@
           <label>Custom Exercise Name</label>
           <input id="w-name-custom" type="text" placeholder="Enter exercise name">
         </div>
-        <div class="form-group">
-          <label>Sets</label>
-          <input id="w-sets" type="number" placeholder="3" min="1">
+        <!-- Strength: sets count + build button -->
+        <div class="form-group" id="w-sets-group">
+          <label>Number of Sets</label>
+          <input id="w-sets" type="number" placeholder="3" min="1" max="10">
         </div>
-        <div class="form-group">
-          <label>Reps</label>
-          <input id="w-reps" type="number" placeholder="10" min="1">
+        <div class="form-group" id="w-sets-btn-group" style="justify-content: flex-end;">
+          <label>&nbsp;</label>
+          <button class="btn btn-blue" type="button" onclick="buildSetRows()" style="white-space:nowrap">Build Sets</button>
         </div>
-        <div class="form-group">
-          <label>Weight (lbs)</label>
-          <input id="w-weight" type="number" placeholder="135" min="0">
+        <!-- Cardio fields -->
+        <div class="form-group" id="w-duration-group" style="display:none">
+          <label>Duration (min)</label>
+          <input id="w-duration" type="number" placeholder="30" min="1">
+        </div>
+        <div class="form-group" id="w-distance-group" style="display:none">
+          <label>Distance (miles)</label>
+          <input id="w-distance" type="number" placeholder="3.0" min="0" step="0.1">
         </div>
         <div class="form-group">
           <label>Date</label>
           <input id="w-date" type="date">
         </div>
       </div>
+
+      <!-- Individual set rows (strength only) -->
+      <div id="set-rows-container" style="display:none; margin-bottom:14px;">
+        <div id="set-rows"></div>
+      </div>
+
       <button class="btn btn-blue" onclick="addWorkout()">Add Exercise</button>
     </div>
 
@@ -374,6 +567,7 @@ const loadObj = k => JSON.parse(localStorage.getItem(k) || '{}');
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('header-date').textContent = new Date().toLocaleDateString('en-US', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
   ['w-date','b-date','n-date'].forEach(id => { document.getElementById(id).value = today(); });
+  renderCalendar();
   const goals = loadObj('ft-goals');
   if (goals.cal) {
     document.getElementById('g-cal').value = goals.cal;
@@ -395,9 +589,43 @@ function switchTab(name) {
 }
 
 // ── WORKOUT ───────────────────────────────────────────────────────────────
+const CARDIO_EXERCISES = ['Treadmill','Elliptical','Bike','Stair Climber','Jump Rope'];
+
 function toggleCustomExercise() {
   const sel = document.getElementById('w-name').value;
-  document.getElementById('custom-exercise-group').style.display = sel === '__custom__' ? 'block' : 'none';
+  const isCardio = CARDIO_EXERCISES.includes(sel);
+  const isCustom = sel === '__custom__';
+
+  document.getElementById('custom-exercise-group').style.display = isCustom ? 'block' : 'none';
+
+  // Cardio fields
+  document.getElementById('w-duration-group').style.display = isCardio ? 'block' : 'none';
+  document.getElementById('w-distance-group').style.display = isCardio ? 'block' : 'none';
+
+  // Strength fields
+  document.getElementById('w-sets-group').style.display = isCardio ? 'none' : 'block';
+  document.getElementById('w-sets-btn-group').style.display = isCardio ? 'none' : 'block';
+
+  // Reset set rows when switching exercises
+  document.getElementById('set-rows-container').style.display = 'none';
+  document.getElementById('set-rows').innerHTML = '';
+  document.getElementById('w-sets').value = '';
+}
+
+function buildSetRows() {
+  const count = parseInt(document.getElementById('w-sets').value);
+  if (!count || count < 1) { alert('Enter number of sets first.'); return; }
+  const container = document.getElementById('set-rows');
+  container.innerHTML = '';
+  for (let i = 1; i <= count; i++) {
+    container.innerHTML += `
+      <div class="set-row">
+        <span class="set-label">Set ${i}</span>
+        <input type="number" id="set-reps-${i}" placeholder="Reps" min="1">
+        <input type="number" id="set-weight-${i}" placeholder="lbs" min="0" step="0.5">
+      </div>`;
+  }
+  document.getElementById('set-rows-container').style.display = 'block';
 }
 
 function addWorkout() {
@@ -405,20 +633,48 @@ function addWorkout() {
   const name = sel === '__custom__'
     ? document.getElementById('w-name-custom').value.trim()
     : sel.trim();
-  const sets = parseInt(document.getElementById('w-sets').value);
-  const reps = parseInt(document.getElementById('w-reps').value);
-  const weight = parseFloat(document.getElementById('w-weight').value) || 0;
+  const isCardio = CARDIO_EXERCISES.includes(sel);
   const date = document.getElementById('w-date').value;
-  if (!name || !sets || !reps) { alert('Please fill in exercise, sets, and reps.'); return; }
+
+  if (!name) { alert('Please select an exercise.'); return; }
+
+  let entry = { name, date, id: Date.now(), isCardio };
+
+  if (isCardio) {
+    const duration = parseFloat(document.getElementById('w-duration').value) || null;
+    const distance = parseFloat(document.getElementById('w-distance').value) || null;
+    if (!duration) { alert('Please enter duration.'); return; }
+    entry.duration = duration;
+    entry.distance = distance;
+  } else {
+    const count = parseInt(document.getElementById('w-sets').value);
+    if (!count) { alert('Enter number of sets and click Build Sets first.'); return; }
+    const sets = [];
+    for (let i = 1; i <= count; i++) {
+      const reps = parseInt(document.getElementById(`set-reps-${i}`)?.value) || 0;
+      const weight = parseFloat(document.getElementById(`set-weight-${i}`)?.value) || 0;
+      sets.push({ set: i, reps, weight });
+    }
+    if (sets.every(s => !s.reps)) { alert('Fill in reps for at least one set.'); return; }
+    entry.sets = sets;
+  }
+
   const entries = load('ft-workouts');
-  entries.push({ name, sets, reps, weight, date, id: Date.now() });
+  entries.push(entry);
   save('ft-workouts', entries);
+
   document.getElementById('w-name').value = '';
   document.getElementById('w-name-custom').value = '';
-  document.getElementById('custom-exercise-group').style.display = 'none';
+  document.getElementById('w-duration').value = '';
+  document.getElementById('w-distance').value = '';
   document.getElementById('w-sets').value = '';
-  document.getElementById('w-reps').value = '';
-  document.getElementById('w-weight').value = '';
+  document.getElementById('custom-exercise-group').style.display = 'none';
+  document.getElementById('w-duration-group').style.display = 'none';
+  document.getElementById('w-distance-group').style.display = 'none';
+  document.getElementById('w-sets-group').style.display = 'block';
+  document.getElementById('w-sets-btn-group').style.display = 'block';
+  document.getElementById('set-rows-container').style.display = 'none';
+  document.getElementById('set-rows').innerHTML = '';
   renderWorkout();
 }
 
@@ -438,11 +694,15 @@ function renderWorkout() {
   if (todayEntries.length === 0) {
     tw.innerHTML = '<div class="empty">No exercises logged today yet.</div>';
   } else {
-    tw.innerHTML = `<table><thead><tr><th>Exercise</th><th>Sets</th><th>Reps</th><th>Weight</th><th></th></tr></thead><tbody>
+    tw.innerHTML = `<table><thead><tr><th>Exercise</th><th>Sets</th><th></th></tr></thead><tbody>
       ${todayEntries.map(e => `<tr>
         <td><strong>${e.name}</strong></td>
-        <td>${e.sets}</td><td>${e.reps}</td>
-        <td style="color:var(--blue)">${e.weight ? e.weight + ' lbs' : '—'}</td>
+        <td style="color:var(--blue); font-size:0.8rem">${e.isCardio
+          ? `${e.duration} min${e.distance ? ' · ' + e.distance + ' mi' : ''}`
+          : (Array.isArray(e.sets)
+              ? e.sets.map(s => `<span style="margin-right:8px">S${s.set}: ${s.reps}×${s.weight}lbs</span>`).join('')
+              : `${e.sets}×${e.reps}${e.weight ? ' · ' + e.weight + ' lbs' : ''}`)
+        }</td>
         <td><button class="btn btn-red" onclick="deleteWorkout(${e.id})">✕</button></td>
       </tr>`).join('')}
     </tbody></table>`;
@@ -459,10 +719,15 @@ function renderWorkout() {
     wh.innerHTML = dates.map(d => `
       <div style="margin-bottom:14px">
         <div style="font-size:0.78rem;color:var(--muted);margin-bottom:6px;font-weight:600">${fmt(d)}</div>
-        <table><thead><tr><th>Exercise</th><th>Sets</th><th>Reps</th><th>Weight</th></tr></thead><tbody>
+        <table><thead><tr><th>Exercise</th><th>Details</th></tr></thead><tbody>
           ${grouped[d].map(e => `<tr>
-            <td>${e.name}</td><td>${e.sets}</td><td>${e.reps}</td>
-            <td style="color:var(--blue)">${e.weight ? e.weight + ' lbs' : '—'}</td>
+            <td>${e.name}</td>
+            <td style="color:var(--blue); font-size:0.8rem">${e.isCardio
+              ? `${e.duration} min${e.distance ? ' · ' + e.distance + ' mi' : ''}`
+              : (Array.isArray(e.sets)
+                  ? e.sets.map(s => `<span style="margin-right:8px">S${s.set}: ${s.reps}×${s.weight}lbs</span>`).join('')
+                  : `${e.sets}×${e.reps}${e.weight ? ' · ' + e.weight + ' lbs' : ''}`)
+            }</td>
           </tr>`).join('')}
         </tbody></table>
       </div>`).join('');
@@ -507,6 +772,7 @@ function renderBody() {
       ['Arms', latest.arms ? latest.arms + '"' : '—', '--red'],
     ];
     bl.innerHTML = boxes.map(([l,v,c]) => `<div class="stat-box"><div class="stat-lbl">${l}</div><div class="stat-val" style="color:var(${c})">${v}</div></div>`).join('');
+
   }
 
   // History table
@@ -693,6 +959,104 @@ function renderPRBoard() {
         <div class="pr-weight">${w} lbs</div>
       </div>`).join('');
   }
+}
+
+// ── CALENDAR ──────────────────────────────────────────────────────────────
+let calYear = new Date().getFullYear();
+let calMonth = new Date().getMonth();
+
+function calNav(dir) {
+  calMonth += dir;
+  if (calMonth > 11) { calMonth = 0; calYear++; }
+  if (calMonth < 0)  { calMonth = 11; calYear--; }
+  renderCalendar();
+}
+
+function logRestDay() {
+  const td = today();
+  const restDays = load('ft-rest');
+  if (restDays.includes(td)) {
+    save('ft-rest', restDays.filter(d => d !== td));
+  } else {
+    restDays.push(td);
+    save('ft-rest', restDays);
+  }
+  renderCalendar();
+  renderWorkout();
+}
+
+function renderCalendar() {
+  const todayStr = today();
+  const workouts = load('ft-workouts');
+  const workedDays = new Set(workouts.map(e => e.date));
+  const restDays = new Set(load('ft-rest'));
+
+  const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('cal-month-label').textContent = `${monthNames[calMonth]} ${calYear}`;
+
+  const firstDay = new Date(calYear, calMonth, 1).getDay(); // 0=Sun
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+
+  let html = '<div class="cal-grid">';
+  // Day headers
+  ['Su','Mo','Tu','We','Th','Fr','Sa'].forEach(d => {
+    html += `<div class="cal-dow">${d}</div>`;
+  });
+  // Empty cells before first day
+  for (let i = 0; i < firstDay; i++) html += '<div class="cal-day empty"></div>';
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday = dateStr === todayStr;
+    const isPast = dateStr < todayStr;
+    const didWork = workedDays.has(dateStr);
+
+    let cls = 'cal-day';
+    let icon = '';
+
+    const isRest = restDays.has(dateStr);
+    if (isPast || isToday) {
+      if (didWork) {
+        cls += ' did-workout';
+        icon = '<div class="cal-icon">✓</div>';
+      } else if (isRest) {
+        cls += ' rest-day';
+        icon = '<div class="cal-icon">R</div>';
+      } else if (isPast) {
+        cls += ' no-workout';
+        icon = '<div class="cal-icon">✕</div>';
+      }
+    } else {
+      cls += ' future';
+    }
+    if (isToday) cls += ' is-today';
+
+    html += `<div class="${cls}"><div class="cal-num">${d}</div>${icon}</div>`;
+  }
+  html += '</div>';
+  document.getElementById('calendar-grid').innerHTML = html;
+
+  // Update rest day button label
+  const restBtn = document.getElementById('rest-day-btn');
+  if (restBtn) {
+    const isRest = restDays.has(today());
+    restBtn.textContent = isRest ? '✕ Remove Rest Day' : '😴 Log Rest Day';
+    restBtn.style.background = isRest ? 'rgba(248,113,113,0.12)' : 'rgba(96,165,250,0.12)';
+    restBtn.style.borderColor = isRest ? 'rgba(248,113,113,0.3)' : 'rgba(96,165,250,0.3)';
+    restBtn.style.color = isRest ? 'var(--red)' : 'var(--blue)';
+  }
+
+  // Update streak panel (workout OR rest day keeps streak alive)
+  let streak = 0;
+  const now = new Date();
+  for (let i = 0; i < 365; i++) {
+    const d = new Date(now); d.setDate(now.getDate() - i);
+    const ds = d.toISOString().slice(0,10);
+    if (workedDays.has(ds) || restDays.has(ds)) streak++;
+    else if (i > 0) break;
+  }
+  document.getElementById('streak-count').textContent = streak;
+  document.getElementById('streak-fire').textContent = streak >= 3 ? '🔥' : streak > 0 ? '💪' : '😴';
 }
 </script>
 </body>
